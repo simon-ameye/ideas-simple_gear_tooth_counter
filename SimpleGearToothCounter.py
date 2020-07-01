@@ -3,6 +3,7 @@
 #Please share your questions to Simon Ameye - AVL AST FRANCE
 
 import numpy as np
+import os
 import cv2
 import matplotlib.widgets as wgt
 import matplotlib.patches as patches
@@ -125,7 +126,8 @@ def browseim(self):
     root = Tk()
     root.withdraw()
     print("1) Browse your image")
-    filename = askopenfilename()
+    curr_directory = os.getcwd()
+    filename = askopenfilename(initialdir = curr_directory + "/examples", title = "Select picture")
     iminit = imread(filename)
     (im,im_for_color) = ROI(iminit)
     update("val")
