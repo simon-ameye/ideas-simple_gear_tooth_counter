@@ -1,5 +1,6 @@
 # simple-gear-tooth-counter
 Simple Gear Tooth Counter
+
 ![simple-gear-tooth-counter Demo](demo/demo.gif)
 
 This is a simple tool for gear tooth (not only) counting
