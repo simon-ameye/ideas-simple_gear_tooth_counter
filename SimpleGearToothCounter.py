@@ -8,6 +8,7 @@ import cv2
 import matplotlib.widgets as wgt
 import matplotlib.patches as patches
 import matplotlib.pyplot as plt
+import matplotlib.colors as colors
 from imageio import imread
 from scipy import ndimage
 from scipy.signal import find_peaks
@@ -57,30 +58,43 @@ def update(val):
     Sval = Val_slider.val
     center_point,r,bnim_centered,x_small,X_small,x_bary,bary,sorted_peaks_args,N = Gear_function(im,Sdist,im_for_color)
     nb_of_teeth = x_small[sorted_peaks_args[np.int(Sval)]]
-    ax[0,0].clear()
-    ax[0,0].imshow(im)
-    ax[0,0].plot(center_point[1],center_point[0], 'x')
+    real_graph.clear()
+    real_graph.imshow(im)
+    #real_graph.plot(center_point[1],center_point[0], 'x')
 #    rect = patches.Rectangle((center_point[1]-r,center_point[0]-r),2*r,2*r,linewidth=1,edgecolor='C1',facecolor='none')
-    circle = patches.Circle((center_point[1],center_point[0]),r,fill=False,color = "C1")
+    circle = patches.Circle((center_point[1],center_point[0]),r,fill=False,color = "tab:blue")
 #    ax[0,0].add_patch(rect)
-    ax[0,0].add_patch(circle)
-    ax[0,0].axis('off')
-    ax[0,1].clear()
-    ax[0,1].imshow(bnim_centered, cmap='binary')
-    ax[0,1].axis('off')
-    ax[1,0].clear()
-    ax[1,0].plot(x_bary,bary)
-    if (min(bary)!=max(bary)) : ax[1,0].set_ylim(min(bary),max(bary))
-    ax[1,0].set_yticklabels([])
-    ax[1,0].set_frame_on(False)
-    ax[1,0].axes.get_yaxis().set_visible(False)
-    ax[1,1].clear()
-    ax[1,1].plot(x_small,np.abs(X_small))
-    ax[1,1].plot([nb_of_teeth,nb_of_teeth],[0,np.max(np.abs(X_small))],color = "C1")
-    ax[1,1].set_yticklabels([])
-    ax[1,1].set_frame_on(False)
-    ax[1,1].axes.get_yaxis().set_visible(False)
-    if (max(np.abs(X_small))>0) : ax[1,1].set_ylim(0, max(np.abs(X_small)))
+    real_graph.add_patch(circle)
+    real_graph.axis('off')
+    real_graph.set_title('Original image', fontsize = 10, color = "black")
+    #ax[0,0].set_title('Initial picture', fontsize = 10)
+    bn_graph.clear()
+    pic = bn_graph.imshow(bnim_centered, cmap=colors.ListedColormap(['white', 'tab:blue']))
+    pic.set_clim(0,1)
+    bn_graph.axis('off')
+    bn_graph.set_title('Filtered image', fontsize = 10, color = "black")
+
+    tempo_graph.clear()
+    tempo_graph.plot(x_bary,bary, color = 'tab:blue')
+    if (min(bary)!=max(bary)) : tempo_graph.set_ylim(min(bary),max(bary))
+    #ax[1,0].set_yticklabels([])
+    #ax[1,0].set_xticklabels([])
+    tempo_graph.set_frame_on(False)
+    tempo_graph.axes.get_yaxis().set_visible(False)
+    tempo_graph.axes.get_xaxis().set_visible(False)
+    tempo_graph.set_title('Gear profile VS angle', fontsize = 10, color = "black")
+    #ax[1,0].set_ylabel('Gear profile', fontsize = 12)
+    freq_graph.clear()
+    #freq_graph.plot(x_small,np.abs(X_small))
+    freq_graph.bar(x_small, np.abs(X_small), width=2, color = 'tab:blue')
+    freq_graph.bar(x_small[sorted_peaks_args[np.int(Sval)]], np.abs(X_small[sorted_peaks_args[np.int(Sval)]]), width=2, color = "orange")
+    #freq_graph.plot([nb_of_teeth,nb_of_teeth],[0,np.max(np.abs(X_small))],color = "C1")
+    freq_graph.set_yticklabels([])
+    freq_graph.set_frame_on(False)
+    freq_graph.axes.get_yaxis().set_visible(False)
+    freq_graph.axes.get_xaxis().set_visible(False)
+    freq_graph.set_title('Thrust level VS nb of teeth', fontsize = 10, color = "black")
+    if (max(np.abs(X_small))>0) : freq_graph.set_ylim(0, max(np.abs(X_small)))
     init_angle = -(np.angle(X_small[sorted_peaks_args[np.int(Sval)]])/nb_of_teeth)
     angles = np.array(init_angle+(np.linspace(0,2*np.pi,nb_of_teeth+1)))
     lines_vec_x = np.array(r*np.cos(angles))
@@ -88,10 +102,10 @@ def update(val):
     lines_vec_zeros = lines_vec_x*0
     lines_vec_x_zeros = np.reshape(np.array([lines_vec_x,lines_vec_zeros]).T,(2*len(lines_vec_x),1))
     lines_vec_y_zeros = np.reshape(np.array([lines_vec_y,lines_vec_zeros]).T,(2*len(lines_vec_y),1))
-    real_graph.plot(lines_vec_x_zeros+center_point[1],lines_vec_y_zeros+center_point[0],color = "C1")
+    real_graph.plot(lines_vec_x_zeros+center_point[1],lines_vec_y_zeros+center_point[0],color = "orange",linewidth=0.5)
     for txt in fig.texts:
         txt.remove()
-    plt.figtext(0.5, 0.5, (str(nb_of_teeth)),color='C1', fontsize=20)
+    freq_graph.annotate(str(nb_of_teeth), (nb_of_teeth,0), textcoords="offset points", xytext=(0,-5), ha='center', va='top', color='orange', fontsize=16)
     fig.canvas.draw_idle()
 
 def ROI(iminit):
@@ -128,7 +142,7 @@ def browseim(self):
     print("1) Browse your image")
     curr_directory = os.getcwd()
     filename = askopenfilename(initialdir = curr_directory + "/examples", title = "Select picture")
-    iminit = imread(filename)
+    iminit = imread(filename)[:,:,:4]
     (im,im_for_color) = ROI(iminit)
     update("val")
 
@@ -136,28 +150,29 @@ plt.close('all')
 #initialize
 plt.rcParams['toolbar'] = 'None'
 fig = plt.figure("A Simple Gear Tooth Counter") 
-ax = fig.subplots(2,2)
 Sdist = 0.3
-real_graph = ax[0,0]
-bn_graph = ax[0,1]
-tempo_graph = ax[1,0]
-freq_graph = ax[1,1]
+gs = fig.add_gridspec(15, 2)
+real_graph = fig.add_subplot(gs[1:9,0])
+bn_graph = fig.add_subplot(gs[1:9,1])
+tempo_graph = fig.add_subplot(gs[10:15,0])
+freq_graph = fig.add_subplot(gs[10:14,1])
 axes = plt.axes([0.2, 0.95, 0.65, 0.03])
-Dist_slider = wgt.Slider(axes, 'Image Filter', 0, 1-0.01, valinit=0.3, valstep=0.01)
+Dist_slider = wgt.Slider(axes, 'Image Filter', 0, 1-0.01, valinit=0.37, valstep=0.01)
 axes = plt.axes([0.2, 0.9, 0.65, 0.03])
 Val_slider = wgt.Slider(axes, 'Harmonic', 0, 10, valinit=0, valstep=1)
+#Val_slider.val = 4
 try:
-    im = imread("StartLogo.png")
+    im = imread("StartLogo.png")[:,:,:4]
 except:
-    im = np.ones([100,100,4])
-im_for_color = im[75:77,25:27,0:3]
+    im = np.ones([100,100,3])
+im_for_color = im[186:201,237:257,0:4]
 update("val")
 Dist_slider.on_changed(update)
 Val_slider.on_changed(update)
-axnext = plt.axes([0.6, 0.02, 0.2, 0.03])
+axnext = plt.axes([0.6, 0.025, 0.2, 0.035])
 bscreenshot = wgt.Button(axnext, 'Take Screenshot')
 bscreenshot.on_clicked(takeScreenshot)
-axnext = plt.axes([0.3, 0.02, 0.2, 0.03])
+axnext = plt.axes([0.2, 0.025, 0.2, 0.035])
 bbrowse = wgt.Button(axnext, 'Browse')
 bbrowse.on_clicked(browseim)
 plt.show()
