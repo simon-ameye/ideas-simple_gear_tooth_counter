@@ -42,3 +42,4 @@ pip3 install scipy
 pip3 install imageio
 pip3 install matplotlib
 pip3 install numpy
+sudo apt-get install scrot
