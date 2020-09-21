@@ -17,7 +17,6 @@ from tkinter import Tk
 from pyautogui import screenshot
 from skimage import img_as_ubyte
 
-
 def Gear_function (im,Sdist,im_for_color):
     color_values = np.array([np.mean(im_for_color[:,:,0]),np.mean(im_for_color[:,:,1]),np.mean(im_for_color[:,:,2])])
     color_values[color_values==0]=1e-5
@@ -60,35 +59,25 @@ def update(val):
     nb_of_teeth = x_small[sorted_peaks_args[np.int(Sval)]]
     real_graph.clear()
     real_graph.imshow(im)
-    #real_graph.plot(center_point[1],center_point[0], 'x')
-#    rect = patches.Rectangle((center_point[1]-r,center_point[0]-r),2*r,2*r,linewidth=1,edgecolor='C1',facecolor='none')
     circle = patches.Circle((center_point[1],center_point[0]),r,fill=False,color = "tab:blue")
-#    ax[0,0].add_patch(rect)
     real_graph.add_patch(circle)
     real_graph.axis('off')
     real_graph.set_title('Original image', fontsize = 10, color = "black")
-    #ax[0,0].set_title('Initial picture', fontsize = 10)
     bn_graph.clear()
     pic = bn_graph.imshow(bnim_centered, cmap=colors.ListedColormap(['white', 'tab:blue']))
     pic.set_clim(0,1)
     bn_graph.axis('off')
     bn_graph.set_title('Filtered image', fontsize = 10, color = "black")
-
     tempo_graph.clear()
     tempo_graph.plot(x_bary,bary, color = 'tab:blue')
     if (min(bary)!=max(bary)) : tempo_graph.set_ylim(min(bary),max(bary))
-    #ax[1,0].set_yticklabels([])
-    #ax[1,0].set_xticklabels([])
     tempo_graph.set_frame_on(False)
     tempo_graph.axes.get_yaxis().set_visible(False)
     tempo_graph.axes.get_xaxis().set_visible(False)
     tempo_graph.set_title('Gear profile VS angle', fontsize = 10, color = "black")
-    #ax[1,0].set_ylabel('Gear profile', fontsize = 12)
     freq_graph.clear()
-    #freq_graph.plot(x_small,np.abs(X_small))
     freq_graph.bar(x_small, np.abs(X_small), width=2, color = 'tab:blue')
     freq_graph.bar(x_small[sorted_peaks_args[np.int(Sval)]], np.abs(X_small[sorted_peaks_args[np.int(Sval)]]), width=2, color = "orange")
-    #freq_graph.plot([nb_of_teeth,nb_of_teeth],[0,np.max(np.abs(X_small))],color = "C1")
     freq_graph.set_yticklabels([])
     freq_graph.set_frame_on(False)
     freq_graph.axes.get_yaxis().set_visible(False)
@@ -150,7 +139,7 @@ plt.close('all')
 #initialize
 plt.rcParams['toolbar'] = 'None'
 fig = plt.figure("A Simple Gear Tooth Counter") 
-Sdist = 0.3
+Sdist = 0.37
 gs = fig.add_gridspec(15, 2)
 real_graph = fig.add_subplot(gs[1:9,0])
 bn_graph = fig.add_subplot(gs[1:9,1])
@@ -160,11 +149,10 @@ axes = plt.axes([0.2, 0.95, 0.65, 0.03])
 Dist_slider = wgt.Slider(axes, 'Image Filter', 0, 1-0.01, valinit=0.37, valstep=0.01)
 axes = plt.axes([0.2, 0.9, 0.65, 0.03])
 Val_slider = wgt.Slider(axes, 'Harmonic', 0, 10, valinit=0, valstep=1)
-#Val_slider.val = 4
 try:
     im = imread("StartLogo.png")[:,:,:4]
 except:
-    im = np.ones([100,100,3])
+    im = np.ones([300,300,3])
 im_for_color = im[186:201,237:257,0:4]
 update("val")
 Dist_slider.on_changed(update)
