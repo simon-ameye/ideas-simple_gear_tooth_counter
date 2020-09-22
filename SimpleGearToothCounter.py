@@ -37,8 +37,6 @@ def Gear_function (im,Sdist,Soff,im_for_color):
     n, m = bnim_centered.shape
     x, y = np.indices((n, m))
     distances = np.sqrt((x - 0.5*n)**2 + (y - 0.5*m)**2)/r
-    
-    
     bnim_centered[(bnim_centered == 1) * (distances < (Soff))] = -1
     #go to polar image
     polar_image = cv2.linearPolar(1*(bnim_centered==1),(bnim_centered.shape[0]/2, bnim_centered.shape[1]/2), r, cv2.WARP_FILL_OUTLIERS)
