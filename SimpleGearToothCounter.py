@@ -39,7 +39,6 @@ def Gear_function (im,Sdist,Soff,im_for_color):
     distances = np.sqrt((x - 0.5*n)**2 + (y - 0.5*m)**2)/r
     bnim_centered[(bnim_centered == 1) * (distances < (Soff))] = -1
     #go to polar image
-
     polar_image = cv2.linearPolar(1*(bnim_centered==1),(bnim_centered.shape[0]/2, bnim_centered.shape[1]/2), r, cv2.WARP_FILL_OUTLIERS)
     #fft
     bary = np.sum(polar_image,1)
@@ -65,35 +64,25 @@ def update(val):
     nb_of_teeth = x_small[sorted_peaks_args[np.int(Sval)]]
     real_graph.clear()
     real_graph.imshow(im)
-    #real_graph.plot(center_point[1],center_point[0], 'x')
-#    rect = patches.Rectangle((center_point[1]-r,center_point[0]-r),2*r,2*r,linewidth=1,edgecolor='C1',facecolor='none')
     circle = patches.Circle((center_point[1],center_point[0]),r,fill=False,color = "tab:blue")
-#    ax[0,0].add_patch(rect)
     real_graph.add_patch(circle)
     real_graph.axis('off')
     real_graph.set_title('Original image', fontsize = 10, color = "black")
-    #ax[0,0].set_title('Initial picture', fontsize = 10)
     bn_graph.clear()
     pic = bn_graph.imshow(bnim_centered, cmap=colors.ListedColormap(['tab:blue', 'white', 'orange']))
     pic.set_clim(-1,1)
     bn_graph.axis('off')
     bn_graph.set_title('Filtered image', fontsize = 10, color = "black")
-
     tempo_graph.clear()
     tempo_graph.plot(x_bary,bary, color = 'tab:blue')
     if (min(bary)!=max(bary)) : tempo_graph.set_ylim(min(bary),max(bary))
-    #ax[1,0].set_yticklabels([])
-    #ax[1,0].set_xticklabels([])
     tempo_graph.set_frame_on(False)
     tempo_graph.axes.get_yaxis().set_visible(False)
     tempo_graph.axes.get_xaxis().set_visible(False)
     tempo_graph.set_title('Gear profile VS angle', fontsize = 10, color = "black")
-    #ax[1,0].set_ylabel('Gear profile', fontsize = 12)
     freq_graph.clear()
-    #freq_graph.plot(x_small,np.abs(X_small))
     freq_graph.bar(x_small, np.abs(X_small), width=2, color = 'tab:blue')
     freq_graph.bar(x_small[sorted_peaks_args[np.int(Sval)]], np.abs(X_small[sorted_peaks_args[np.int(Sval)]]), width=2, color = "orange")
-    #freq_graph.plot([nb_of_teeth,nb_of_teeth],[0,np.max(np.abs(X_small))],color = "C1")
     freq_graph.set_yticklabels([])
     freq_graph.set_frame_on(False)
     freq_graph.axes.get_yaxis().set_visible(False)
@@ -114,16 +103,6 @@ def update(val):
     fig.canvas.draw_idle()
 
 def ROI(iminit):
-    # scale image if larger than required size
-    max_h = 800
-    i_height, i_width = iminit.shape[:2]
-    if max_h < i_height:
-        # scaling factor 
-        Scale = max_h / float(i_height)
-        if max_h/float(i_width) < Scale:
-            Scale = max_h / float(i_width)
-        # resize image
-        iminit = cv2.resize(iminit, None, fx=Scale, fy=Scale, interpolation=cv2.INTER_AREA)
     # Select ROI for image crop
     print("2) Crop the region of interest and press Enter")
     showCrosshair = False
@@ -166,7 +145,6 @@ def browseim(self):
     (im,im_for_color) = ROI(iminit)
     update("val")
 
-
 plt.close('all')
 #initialize
 plt.rcParams['toolbar'] = 'None'
@@ -181,7 +159,6 @@ axes = plt.axes([0.2, 0.95, 0.65, 0.03])
 Dist_slider = wgt.Slider(axes, 'Image Filter', 0, 1-0.01, valinit=0.37, valstep=0.01)
 axes = plt.axes([0.2, 0.9, 0.65, 0.03])
 Val_slider = wgt.Slider(axes, 'Harmonic', 0, 10, valinit=0, valstep=1)
-Val_slider.val = 4
 axes = plt.axes([0.2, 0.85, 0.65, 0.03])
 Off_slider = wgt.Slider(axes, 'Offset', 0, 1, valinit=0.85, valstep=0.01)
 try:
@@ -200,7 +177,3 @@ axnext = plt.axes([0.2, 0.025, 0.2, 0.035])
 bbrowse = wgt.Button(axnext, 'Browse')
 bbrowse.on_clicked(browseim)
 plt.show()
-
-
-print("press any key to exit program")
-input()
