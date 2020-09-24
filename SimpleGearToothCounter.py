@@ -44,7 +44,7 @@ def Gear_function (im,Sdist,Soff,im_for_color):
     bary = np.sum(polar_image,1)
     x_bary = np.linspace(0,np.pi*2,len(bary))
     values = np.arange(len(bary))
-    X = np.fft.fft(bary)
+    X = np.fft.fft(bary)/len(bary)
     x_small = values[2:np.int(max(values)/2)]
     X_small = X[2:np.int(max(values)/2)]
     N = max(values)
@@ -97,6 +97,9 @@ def update(val):
     lines_vec_x_zeros = np.reshape(np.array([lines_vec_x,lines_vec_zeros]).T,(2*len(lines_vec_x),1))
     lines_vec_y_zeros = np.reshape(np.array([lines_vec_y,lines_vec_zeros]).T,(2*len(lines_vec_y),1))
     real_graph.plot(lines_vec_x_zeros+center_point[1],lines_vec_y_zeros+center_point[0],color = "orange",linewidth=0.5)
+    angles = np.linspace(0, 2*np.pi, nb_of_teeth * 10)
+    init_angle = np.angle(X_small[sorted_peaks_args[np.int(Sval)]])
+    tempo_graph.plot(angles, np.cos(init_angle + angles * nb_of_teeth) * np.abs(X_small[sorted_peaks_args[np.int(Sval)]]) + np.mean(bary),  color = "orange")
     for txt in fig.texts:
         txt.remove()
     freq_graph.annotate(str(nb_of_teeth), (nb_of_teeth,0), textcoords="offset points", xytext=(0,-5), ha='center', va='top', color='orange', fontsize=16)
@@ -156,11 +159,11 @@ bn_graph = fig.add_subplot(gs[2:10,1])
 tempo_graph = fig.add_subplot(gs[11:17,0])
 freq_graph = fig.add_subplot(gs[11:14,1])
 axes = plt.axes([0.2, 0.95, 0.65, 0.03])
-Dist_slider = wgt.Slider(axes, 'Image Filter', 0, 1-0.01, valinit=0.37, valstep=0.01)
+Dist_slider = wgt.Slider(axes, 'Image Filter', 0, 1-0.01, valinit=0.4, valstep=0.01)
 axes = plt.axes([0.2, 0.9, 0.65, 0.03])
-Val_slider = wgt.Slider(axes, 'Harmonic', 0, 10, valinit=0, valstep=1)
-axes = plt.axes([0.2, 0.85, 0.65, 0.03])
 Off_slider = wgt.Slider(axes, 'Offset', 0, 1, valinit=0.85, valstep=0.01)
+axes = plt.axes([0.2, 0.85, 0.65, 0.03])
+Val_slider = wgt.Slider(axes, 'Harmonic', 0, 10, valinit=0, valstep=1)
 try:
     im = imread("StartLogo.png")[:,:,:4]
 except:
