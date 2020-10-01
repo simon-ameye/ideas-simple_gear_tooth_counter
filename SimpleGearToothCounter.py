@@ -11,10 +11,6 @@ import matplotlib.colors as colors
 from imageio import imread
 from scipy import ndimage
 from scipy.signal import find_peaks
-from tkinter.filedialog import askopenfilename
-from tkinter import Tk
-from pyautogui import screenshot
-from skimage import img_as_ubyte
 
 def polar2cart(r, theta, center):
     x = r  * np.cos(theta) + center[0]
@@ -32,16 +28,26 @@ def img2polar(cartesianim, center, r, offcet_radius):
     polar_img = np.reshape(polar_img,(r-offcet_radius,phase_width))
     return polar_img
 
-def Gear_function (im,Sdist,Soff):
-    color_values = im[clicks[1, 1], clicks[1, 0]][0:3]
-    color_values[color_values==0]=1e-5
+def ColorFilter (im, Sdist, color_values):
     L = im.shape[1]
     H = im.shape[0]
-    im = im[:,:,:3]
-    #filter by color
     bnim = np.zeros((H,L))
-    color_diff_vect = (im[:,:,:]/color_values)
-    bnim[(np.amax(color_diff_vect,axis = 2)-np.amin(color_diff_vect,axis=2))<=Sdist] = 1
+    color_diff_vect = (im.astype("int16")-color_values.astype("int16"))
+    #more "color" discr : np.max(np.abs(color_diff_vect), axis = 2) - np.min(np.abs(color_diff_vect), axis = 2)
+    #more "brightness" discr : np.max(np.abs(color_diff_vect), axis = 2)
+    color_diff_vect2 = np.max(np.abs(color_diff_vect), axis = 2) * 2- np.min(np.abs(color_diff_vect), axis = 2)
+    bnim[color_diff_vect2/255/2<=Sdist] = 1
+
+    #color_diff_vect2 = np.max(np.abs(color_diff_vect), axis = 2)
+    #bnim[color_diff_vect2/255<=Sdist] = 1
+    return bnim
+
+def Gear_function (im,Sdist,Soff):
+    color_values = im[clicks[1, 1], clicks[1, 0]][0:3]
+    #color_values[color_values==0]=1e-5
+    L = im.shape[1]
+    H = im.shape[0]
+    bnim = ColorFilter (im, Sdist, color_values)
     #define work zone
     center_point = [np.int(H/2),np.int(L/2)]
     if np.sum(bnim)>0:
@@ -58,7 +64,6 @@ def Gear_function (im,Sdist,Soff):
     center = [bnim_centered.shape[0]/2, bnim_centered.shape[1]/2]
     cartesianim = 1*(bnim_centered==1)
     polar_image = img2polar(cartesianim, center, r, offcet_radius)
-    #plt.imshow(polar_image)
     #fft
     bary = np.sum(polar_image,0)
     x_bary = np.linspace(0,np.pi*2,len(bary))
@@ -100,8 +105,8 @@ def update(val):
     tempo_graph.axes.get_xaxis().set_visible(False)
     tempo_graph.set_title('Gear profile VS angle', fontsize = 10, color = "black")
     freq_graph.clear()
-    freq_graph.bar(x_small, np.abs(X_small), width=2, color = 'tab:blue')
-    freq_graph.bar(x_small[sorted_peaks_args[np.int(Sval)]], np.abs(X_small[sorted_peaks_args[np.int(Sval)]]), width=2, color = "orange")
+    freq_graph.bar(x_small, np.abs(X_small), width=7, color = 'tab:blue')
+    freq_graph.bar(x_small[sorted_peaks_args[np.int(Sval)]], np.abs(X_small[sorted_peaks_args[np.int(Sval)]]), width=7, color = "orange")
     freq_graph.set_yticklabels([])
     freq_graph.set_frame_on(False)
     freq_graph.axes.get_yaxis().set_visible(False)
@@ -125,14 +130,21 @@ def update(val):
     freq_graph.annotate(str(nb_of_teeth), (nb_of_teeth,0), textcoords="offset points", xytext=(0,-5), ha='center', va='top', color='orange', fontsize=16)
     fig.canvas.draw_idle()
 
-def takeScreenshot(self): 
+def takeScreenshot(self):
+    from pyautogui import screenshot
+    from skimage import img_as_ubyte
+    
     global im,im_for_color
     print("1) A Screenshot has been performed")
     myScreenshot = screenshot()
     im = img_as_ubyte(myScreenshot)[:,:,:3]
+    clicks[1, :] = np.array([im.shape[1], im.shape[0]])/2
     update("val")
     
 def browseim(self):
+    from tkinter.filedialog import askopenfilename
+    from tkinter import Tk
+    
     global im,im_for_color
     root = Tk()
     root.withdraw()
@@ -140,6 +152,7 @@ def browseim(self):
     curr_directory = os.getcwd()
     filename = askopenfilename(initialdir = curr_directory + "/examples", title = "Select picture")
     im = imread(filename)[:,:,:3]
+    clicks[1, :] = np.array([im.shape[1], im.shape[0]])/2
     update("val")
     
 def onclick(event): 
@@ -164,7 +177,7 @@ bn_graph = fig.add_subplot(gs[2:10,1])
 tempo_graph = fig.add_subplot(gs[11:17,0])
 freq_graph = fig.add_subplot(gs[11:14,1])
 axes = plt.axes([0.2, 0.95, 0.65, 0.03])
-Dist_slider = wgt.Slider(axes, 'Image Filter', 0, 1-0.01, valinit=0.4, valstep=0.01)
+Dist_slider = wgt.Slider(axes, 'Image Filter', 0, 1-0.01, valinit=0.25, valstep=0.01)
 axes = plt.axes([0.2, 0.9, 0.65, 0.03])
 Off_slider = wgt.Slider(axes, 'Offset', 0, 1, valinit=0.85, valstep=0.01)
 axes = plt.axes([0.2, 0.85, 0.65, 0.03])
