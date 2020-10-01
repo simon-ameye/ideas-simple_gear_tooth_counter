@@ -4,7 +4,6 @@
 
 import numpy as np
 import os
-import cv2
 import matplotlib.widgets as wgt
 import matplotlib.patches as patches
 import matplotlib.pyplot as plt
@@ -16,7 +15,22 @@ from tkinter.filedialog import askopenfilename
 from tkinter import Tk
 from pyautogui import screenshot
 from skimage import img_as_ubyte
-import matplotlib.image as mpimg
+
+def polar2cart(r, theta, center):
+    x = r  * np.cos(theta) + center[0]
+    y = r  * np.sin(theta) + center[1]
+    return x, y
+
+def img2polar(cartesianim, center, r, offcet_radius):
+    phase_width = 2 * cartesianim.shape[0] + 2 * cartesianim.shape[1]
+    theta , R = np.meshgrid(np.linspace(0, 2*np.pi, phase_width), 
+                            np.arange(offcet_radius, r))
+    Xcart, Ycart = polar2cart(R, theta, center)
+    Xcart = Xcart.astype(int)
+    Ycart = Ycart.astype(int)
+    polar_img = cartesianim[Ycart,Xcart]
+    polar_img = np.reshape(polar_img,(r-offcet_radius,phase_width))
+    return polar_img
 
 def Gear_function (im,Sdist,Soff):
     color_values = im[clicks[1, 1], clicks[1, 0]][0:3]
@@ -37,12 +51,16 @@ def Gear_function (im,Sdist,Soff):
     bnim_centered = bnim[(center_point[0]-r):(center_point[0]+r),(center_point[1]-r):(center_point[1]+r)]
     n, m = bnim_centered.shape
     x, y = np.indices((n, m))
+    offcet_radius = (Soff * r).astype("int")
     distances = np.sqrt((x - 0.5*n)**2 + (y - 0.5*m)**2)/r
     bnim_centered[(bnim_centered == 1) * (distances < (Soff))] = -1
     #go to polar image
-    polar_image = cv2.linearPolar(1*(bnim_centered==1),(bnim_centered.shape[0]/2, bnim_centered.shape[1]/2), r, cv2.WARP_FILL_OUTLIERS)
+    center = [bnim_centered.shape[0]/2, bnim_centered.shape[1]/2]
+    cartesianim = 1*(bnim_centered==1)
+    polar_image = img2polar(cartesianim, center, r, offcet_radius)
+    #plt.imshow(polar_image)
     #fft
-    bary = np.sum(polar_image,1)
+    bary = np.sum(polar_image,0)
     x_bary = np.linspace(0,np.pi*2,len(bary))
     values = np.arange(len(bary))
     X = np.fft.fft(bary)/len(bary)
@@ -111,7 +129,7 @@ def takeScreenshot(self):
     global im,im_for_color
     print("1) A Screenshot has been performed")
     myScreenshot = screenshot()
-    im = img_as_ubyte(myScreenshot)
+    im = img_as_ubyte(myScreenshot)[:,:,:3]
     update("val")
     
 def browseim(self):
@@ -121,19 +139,16 @@ def browseim(self):
     print("1) Browse your image")
     curr_directory = os.getcwd()
     filename = askopenfilename(initialdir = curr_directory + "/examples", title = "Select picture")
-    im = imread(filename)[:,:,:4]
+    im = imread(filename)[:,:,:3]
     update("val")
     
 def onclick(event): 
     global clicks
     try : 
-        print("button=%d, x=%d, y=%d, xdata=%f, ydata=%f" % ( 
-         event.button, event.x, event.y, event.xdata, event.ydata))
         clicks[event.button - 1, :] = [event.xdata, event.ydata]
-        print(clicks)
         update("val")
     except : 
-        print("Click on pic")
+        print("Oops, it seams that you did not click on the preview picture")
 
 plt.close('all')
 #initialize
@@ -155,10 +170,10 @@ Off_slider = wgt.Slider(axes, 'Offset', 0, 1, valinit=0.85, valstep=0.01)
 axes = plt.axes([0.2, 0.85, 0.65, 0.03])
 Val_slider = wgt.Slider(axes, 'Harmonic', 0, 10, valinit=0, valstep=1)
 try:
-    im = imread("StartLogo.png")[:,:,:4]
+    im = imread("StartLogo.png")[:,:,:3]
 except:
     im = np.ones([300,300,3])
-im_for_color = im[186:201,237:257,0:4]
+im_for_color = im[186:201,237:257,0:3]
 update("val")
 Dist_slider.on_changed(update)
 Val_slider.on_changed(update)
@@ -169,10 +184,5 @@ bscreenshot.on_clicked(takeScreenshot)
 axnext = plt.axes([0.2, 0.025, 0.2, 0.035])
 bbrowse = wgt.Button(axnext, 'Browse')
 bbrowse.on_clicked(browseim)
-
 clic = real_graph.figure.canvas.mpl_connect('button_press_event', onclick)
-
-
-
-
 plt.show()
