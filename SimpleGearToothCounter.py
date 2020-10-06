@@ -105,7 +105,7 @@ def update(val):
     tempo_graph.axes.get_xaxis().set_visible(False)
     tempo_graph.set_title('Gear profile VS angle', fontsize = 10, color = "black")
     freq_graph.clear()
-    freq_graph.bar(x_small, np.abs(X_small), width=7, color = 'tab:blue')
+    freq_graph.bar(x_small[sorted_peaks_args[0:20]], np.abs(X_small[sorted_peaks_args[0:20]]), width=7, color = 'tab:blue')
     freq_graph.bar(x_small[sorted_peaks_args[np.int(Sval)]], np.abs(X_small[sorted_peaks_args[np.int(Sval)]]), width=7, color = "orange")
     freq_graph.set_yticklabels([])
     freq_graph.set_frame_on(False)
