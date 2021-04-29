@@ -158,7 +158,7 @@ def browseim(self):
 def onclick(event): 
     global clicks
     try : 
-        clicks[event.button - 1, :] = [event.xdata, event.ydata]
+        clicks[event.button - 0, :] = [event.xdata, event.ydata]
         update("val")
     except : 
         print("Oops, it seams that you did not click on the preview picture")
