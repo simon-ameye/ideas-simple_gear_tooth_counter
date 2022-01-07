@@ -11,9 +11,9 @@ Run with Python3 ```python3 SimpleGearToothCounter.py```
 
 ## Examples
 Here are some examples of objects that can be "counted"
-(2.png "title-1") (3.png "title-2")
-(4.png "title-1") (5.png "title-2")
-(6.png "title-1")
+(demo/2.png "title-1") (demo/3.png "title-2")
+(demo/4.png "title-1") (demo/5.png "title-2")
+(demo/6.png "title-1")
 
 ## Install
 This requires Python 3
