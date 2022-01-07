@@ -1,7 +1,8 @@
 # simple-gear-tooth-counter
 
-This is a simple tool for gear tooth (not only) counting
-Please share your questions to Simon Ameye - AVL AST FRANCE
+This is a simple tool for gear tooth (not only) counting.
+
+Please ask your questions to Simon Ameye - AVL AST FRANCE
 
 ![simple-gear-tooth-counter Demo](demo/1.png)
 
@@ -10,6 +11,9 @@ Run with Python3 ```python3 SimpleGearToothCounter.py```
 
 ## Examples
 Here are some examples of objects that can be "counted"
+(2.png "title-1") (3.png "title-2")
+(4.png "title-1") (5.png "title-2")
+(6.png "title-1")
 
 ## Install
 This requires Python 3
