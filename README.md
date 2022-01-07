@@ -1,11 +1,17 @@
 # simple-gear-tooth-counter
-Simple Gear Tooth Counter
-
-![simple-gear-tooth-counter Demo](demo/demo.gif)
 
 This is a simple tool for gear tooth (not only) counting
 Please share your questions to Simon Ameye - AVL AST FRANCE
 
+![simple-gear-tooth-counter Demo](demo/1.png)
+
+## Usage
+Run with Python3 ```python3 SimpleGearToothCounter.py```
+
+## Examples
+Here are some examples of objects that can be "counted"
+
+## Install
 This requires Python 3
 
 Following standard Python libraries are required :
@@ -31,7 +37,7 @@ For Windows installation, please copy and paste the following text in your Windo
 - pip install pyautogui
 - pip install skimage
 
-On linux : 
+Linux : 
 - sudo apt-get install python3
 - sudo apt install python3-pip
 - pip3 install scikit-image
