@@ -20,7 +20,7 @@ pyautogui
 skimage
 
 
-For Windows inatallation, please copy and paste the following text in your Windows command prompt (CMD)
+For Windows installation, please copy and paste the following text in your Windows command prompt (CMD)
 
 - pip install numpy
 - pip install open-cv
