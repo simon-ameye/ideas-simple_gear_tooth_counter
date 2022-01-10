@@ -20,17 +20,6 @@ Here are some examples of objects that can be "counted"
   <img src="demo/6.png" height="150" />
 </p>
 
-
-
-<p float="left">
-  <img src="demo/2.png"  />
-  <img src="demo/3.png"  /> 
-  <img src="demo/4.png"  />
-  <img src="demo/5.png"  />
-  <img src="demo/6.png"  />
-</p>
-
-
 ## Install
 This requires Python 3
 
