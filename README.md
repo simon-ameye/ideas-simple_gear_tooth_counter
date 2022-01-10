@@ -12,7 +12,7 @@ Run with Python3 ```python3 SimpleGearToothCounter.py```
 ## Examples
 Here are some examples of objects that can be "counted"
 
-<p float="left">
+<p float="center">
   <img src="demo/2.png" height="150" />
   <img src="demo/3.png" height="150" /> 
   <img src="demo/4.png" height="150" />
