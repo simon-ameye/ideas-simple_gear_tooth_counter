@@ -7,7 +7,8 @@ This is a presonal project built to try an idea : doing FFT on pictures.
 
 ## Demo
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/t7JIwYvFSTE?controls=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+[![Youtube demo](https://img.youtube.com/vi/t7JIwYvFSTE/0.jpg)](https://youtu.be/t7JIwYvFSTE)
+
 
 ## How it works
 
