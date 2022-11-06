@@ -11,7 +11,7 @@ https://user-images.githubusercontent.com/66630402/200177632-c102ef4d-3f17-4bc9-
 
 ## How it works
 
-|  |  |
+| Step | Result |
 | --- | --- |
 | 0) Raw image | <img src="readme/raw image.png"/> |
 | 1) Shape is isolated using filters (Color selection, offset...), generating a new "black and white" picture. | <img src="readme/image filter.png"/> |
