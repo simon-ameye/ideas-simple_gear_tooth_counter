@@ -6,7 +6,10 @@ It helps people counting occurences on rotation-regular shapes on pictures.
 This is a presonal project built to try an idea : doing FFT on pictures.
 
 ## Demo
-[![Demo youtube](https://youtu.be/t7JIwYvFSTE/0.jpg)](https://youtu.be/t7JIwYvFSTE "Demo youtube")
+
+[![Demo youtube]          // Title
+(StartLogo.png)] // Thumbnail
+(https://youtu.be/t7JIwYvFSTE "Demo youtube")    // Video Link
 
 ## How it works
 
