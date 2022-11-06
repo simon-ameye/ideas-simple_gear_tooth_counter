@@ -7,8 +7,7 @@ This is a presonal project built to try an idea : doing FFT on pictures.
 
 ## Demo
 
-[![Youtube demo](https://img.youtube.com/vi/t7JIwYvFSTE/0.jpg)](https://youtu.be/t7JIwYvFSTE)
-
+https://user-images.githubusercontent.com/66630402/200177632-c102ef4d-3f17-4bc9-8578-0b121fb13601.mp4
 
 ## How it works
 
