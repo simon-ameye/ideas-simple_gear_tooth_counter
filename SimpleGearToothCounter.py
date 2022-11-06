@@ -8,7 +8,7 @@ import matplotlib.widgets as wgt
 import matplotlib.patches as patches
 import matplotlib.pyplot as plt
 import matplotlib.colors as colors
-from imageio import imread
+from imageio.v3 import imread
 from scipy import ndimage
 from scipy.signal import find_peaks
 
@@ -49,10 +49,10 @@ def Gear_function (im,Sdist,Soff):
     H = im.shape[0]
     bnim = ColorFilter (im, Sdist, color_values)
     #define work zone
-    center_point = [np.int(H/2),np.int(L/2)]
+    center_point = [int(H/2),int(L/2)]
     if np.sum(bnim)>0:
-        center_point[0] = (ndimage.measurements.center_of_mass(bnim))[0].astype("int")
-        center_point[1] = (ndimage.measurements.center_of_mass(bnim))[1].astype("int") #PROBLEM
+        center_point[0] = (ndimage.center_of_mass(bnim))[0].astype("int")
+        center_point[1] = (ndimage.center_of_mass(bnim))[1].astype("int") #PROBLEM
     r = min(center_point[1], L - center_point[1], H - center_point[0], center_point[0])-1
     bnim_centered = bnim[(center_point[0]-r):(center_point[0]+r),(center_point[1]-r):(center_point[1]+r)]
     n, m = bnim_centered.shape
@@ -69,8 +69,8 @@ def Gear_function (im,Sdist,Soff):
     x_bary = np.linspace(0,np.pi*2,len(bary))
     values = np.arange(len(bary))
     X = np.fft.fft(bary)/len(bary)
-    x_small = values[2:np.int(max(values)/2)]
-    X_small = X[2:np.int(max(values)/2)]
+    x_small = values[2:int(max(values)/2)]
+    X_small = X[2:int(max(values)/2)]
     N = max(values)
     #find peaks
     peaks, _ = find_peaks(np.abs(X_small))
@@ -85,7 +85,7 @@ def update(val):
     Sval = Val_slider.val
     Soff = Off_slider.val
     center_point,r,bnim_centered,x_small,X_small,x_bary,bary,sorted_peaks_args,N,color_values = Gear_function(im,Sdist,Soff)
-    nb_of_teeth = x_small[sorted_peaks_args[np.int(Sval)]]
+    nb_of_teeth = x_small[sorted_peaks_args[int(Sval)]]
     real_graph.clear()
     real_graph.imshow(im)
     circle = patches.Circle((center_point[1],center_point[0]),r,fill=False,color = "tab:blue")
@@ -106,14 +106,14 @@ def update(val):
     tempo_graph.set_title('Gear profile VS angle', fontsize = 10, color = "black")
     freq_graph.clear()
     freq_graph.bar(x_small[sorted_peaks_args[0:20]], np.abs(X_small[sorted_peaks_args[0:20]]), width=7, color = 'tab:blue')
-    freq_graph.bar(x_small[sorted_peaks_args[np.int(Sval)]], np.abs(X_small[sorted_peaks_args[np.int(Sval)]]), width=7, color = "orange")
+    freq_graph.bar(x_small[sorted_peaks_args[int(Sval)]], np.abs(X_small[sorted_peaks_args[int(Sval)]]), width=7, color = "orange")
     freq_graph.set_yticklabels([])
     freq_graph.set_frame_on(False)
     freq_graph.axes.get_yaxis().set_visible(False)
     freq_graph.axes.get_xaxis().set_visible(False)
     freq_graph.set_title('Confidence level VS nb of teeth', fontsize = 10, color = "black")
     if (max(np.abs(X_small))>0) : freq_graph.set_ylim(0, max(np.abs(X_small)))
-    init_angle = -(np.angle(X_small[sorted_peaks_args[np.int(Sval)]])/nb_of_teeth)
+    init_angle = -(np.angle(X_small[sorted_peaks_args[int(Sval)]])/nb_of_teeth)
     angles = np.array(init_angle+(np.linspace(0,2*np.pi,nb_of_teeth+1)))
     lines_vec_x = np.array(r*np.cos(angles))
     lines_vec_y = np.array(r*np.sin(angles))
@@ -122,8 +122,8 @@ def update(val):
     lines_vec_y_zeros = np.reshape(np.array([lines_vec_y,lines_vec_zeros]).T,(2*len(lines_vec_y),1))
     real_graph.plot(lines_vec_x_zeros+center_point[1],lines_vec_y_zeros+center_point[0],color = "orange",linewidth=0.5)
     angles = np.linspace(0, 2*np.pi, nb_of_teeth * 10)
-    init_angle = np.angle(X_small[sorted_peaks_args[np.int(Sval)]])
-    tempo_graph.plot(angles, np.cos(init_angle + angles * nb_of_teeth) * np.abs(X_small[sorted_peaks_args[np.int(Sval)]]) + np.mean(bary),  color = "orange")
+    init_angle = np.angle(X_small[sorted_peaks_args[int(Sval)]])
+    tempo_graph.plot(angles, np.cos(init_angle + angles * nb_of_teeth) * np.abs(X_small[sorted_peaks_args[int(Sval)]]) + np.mean(bary),  color = "orange")
     for txt in fig.texts:
         txt.remove()
     real_graph.plot(clicks[1,0], clicks[1,1], marker = "1", color = "red", markersize = 10)
@@ -157,6 +157,8 @@ def browseim(self):
     
 def onclick(event): 
     global clicks
+    if event.inaxes != real_graph:
+        return
     try : 
         clicks[event.button - 0, :] = [event.xdata, event.ydata]
         update("val")

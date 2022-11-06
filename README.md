@@ -1,10 +1,20 @@
 # Simple-gear-tooth-counter
 
 This is a simple tool for gear tooth (not only) counting.
+It helps people counting occurences on rotation-regular shapes on pictures.
 
-Please ask your questions to Simon Ameye - AVL AST FRANCE
+This is a presonal project built to try an idea : doing FFT on pictures.
 
-![simple-gear-tooth-counter Demo](demo/1.png)
+## How it works
+
+|  |  |
+| --- | --- |
+| 0) Raw image | <img src="readme/raw image.png"/> |
+| 1) Shape is isolated using filters (Color selection, offset...), generating a new "black and white" picture. | <img src="readme/image filter.png"/> |
+| 2) Image is "unrolled" using filtered image center of gravity as center (gears are always balanced) | <img src="readme/unrolled image.png"/> <img src="readme/unrolled image with offcet.png"/>|
+| 3) Gear profile is deduced by summing raws pixels | <img src="readme/gear profile.png"/> |
+| 4) Fast Fourrier Transform is applied to deduce harmonics. Amplitude of harmonics is used as "confidence level" | <img src="readme/harmonics.png"/> |
+| 5) Rays are plotted on raw image to allow user to vsualize and validate gear count | <img src="readme/rays.png"/> |
 
 ## Usage
 Run with Python3 ```python3 SimpleGearToothCounter.py```
@@ -14,7 +24,7 @@ Here are some examples of objects that can be "counted"
 
 <p float="left">
   <img src="demo/2.png" height="150" />
-  <img src="demo/3.png" height="150" /> 
+  <img src="demo/3.png" height="150" />
   <img src="demo/4.png" height="150" />
   <img src="demo/5.png" height="150" />
   <img src="demo/6.png" height="150" />
@@ -37,6 +47,7 @@ skimage
 
 For Windows installation, please copy and paste the following text in your Windows command prompt (CMD)
 
+```
 - pip install numpy
 - pip install open-cv
 - pip install matplotlib
@@ -45,8 +56,9 @@ For Windows installation, please copy and paste the following text in your Windo
 - pip install thinker
 - pip install pyautogui
 - pip install skimage
-
-Linux : 
+```
+Linux :
+```
 - sudo apt-get install python3
 - sudo apt install python3-pip
 - pip3 install scikit-image
@@ -58,3 +70,4 @@ Linux :
 - pip3 install matplotlib
 - pip3 install numpy
 - sudo apt-get install scrot
+```
