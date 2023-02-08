@@ -1,3 +1,5 @@
+WARNING ! I developed projects before following the CPP projects of 42. The standard and the style may shock :)
+
 # Simple-gear-tooth-counter
 
 This is a simple tool for gear tooth (not only) counting.
