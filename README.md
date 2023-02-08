@@ -1,4 +1,4 @@
-WARNING ! I developed this projects before following the Python projects of 42. The standard and the style may shock :)
+WARNING ! I developed this projects before following the Python projects at 42. The standard and the style may shock :)
 
 # Simple-gear-tooth-counter
 
